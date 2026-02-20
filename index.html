@@ -253,8 +253,7 @@ body.night{
   <div id="info">คลิกอาคารบนแผนที่</div>
 </div>
 </div>
-<div id="map-wrap">
-  <body>
+
 <!-- คู่มือ -->
 <div id="helpOverlay" class="help-overlay">
   <div class="help-popup">
@@ -811,13 +810,10 @@ window.addEventListener('mousemove',e=>{
   panX=e.clientX-sx; panY=e.clientY-sy; update();
 });
 function update(){
-  viewport.setAttribute(
-  "transform",
-  `translate(${panX},${panY}) scale(${scale})`
-
-
-  );
+  map.style.transform =
+    `translate(${panX}px,${panY}px) scale(${scale})`;
 }
+
 const buildingSelect = document.getElementById("buildingSelect");
 const floorSelect = document.getElementById("floorSelect");
 const roomList = document.getElementById("roomList");
@@ -861,23 +857,7 @@ function showRooms() {
 
 </script>
 <script>
-function drawRouteToBuilding(buildingId, startX, startY){
-  const b = document.getElementById(buildingId);
 
-  const x = parseFloat(b.getAttribute("x"));
-  const y = parseFloat(b.getAttribute("y"));
-  const w = parseFloat(b.getAttribute("width"));
-  const h = parseFloat(b.getAttribute("height"));
-
-  const centerX = x + w / 2;
-  const centerY = y + h / 2;
-
-  const path = document.getElementById("route");
-  path.setAttribute(
-    "d",
-    `M ${startX} ${startY} L ${centerX} ${centerY}`
-  );
-}
 const svg = document.querySelector("svg");
 
 document.querySelectorAll(".building").forEach(b=>{
@@ -920,8 +900,27 @@ function zoomToUser(x, y, zoom = 2) {
     `${x - 500/zoom} ${y - 400/zoom} ${1000/zoom} ${800/zoom}`
   );
 }
+function latLngToXY(lat, lng) {
 
+  const topLeft = { lat: 13.677688, lng: 100.615711 };
+  const topRight = { lat: 13.676127, lng: 100.617127 };
+  const bottomLeft = { lat: 13.676239, lng: 100.613911 };
 
+  const width = map.clientWidth;
+  const height = map.clientHeight;
+
+  const latRatio = (lat - bottomLeft.lat) / (topLeft.lat - bottomLeft.lat);
+  const lngRatio = (lng - bottomLeft.lng) / (topRight.lng - bottomLeft.lng);
+
+  const x = lngRatio * width;
+  const y = height - (latRatio * height);
+
+  return { x, y };
+}
+const pos = latLngToXY(userLat, userLng);
+
+marker.style.left = pos.x + "px";
+marker.style.top = pos.y + "px";
 </script>
 <script>
 function closeHelp() {
