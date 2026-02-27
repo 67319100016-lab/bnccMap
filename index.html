@@ -223,7 +223,7 @@ body.night{
 </head>
 
 <body>
-
+<!-- --------------------------------------------------------html------------------------------------------------------->
 
 <div id="sidebar">
   <h2>แผนที่พณิชยการบางนา</h2>
@@ -438,6 +438,7 @@ body.night{
 </div>
 
 <script>
+  /* ===== ------------------------------------------Java-------------------------------------------------------------- ===== */
 /* ===== ข้อมูลอาคาร + พิกัด ===== */
 const buildings = {
   1:{
@@ -742,7 +743,7 @@ let lat = pos.coords.latitude;
 let lng = pos.coords.longitude;
 
 /* 🔵 เพิ่มค่าละติจูดทดลอง */
-lat -= 0.00105;   // เพิ่มขึ้นเล็กน้อย
+lat -= 0.00099999;   // เพิ่มขึ้นเล็กน้อย
 lng -= 0.00090;   // ขยับไปทางซ้าย
 
       if(!isInsideMap(lat,lng)){
@@ -751,10 +752,6 @@ lng -= 0.00090;   // ขยับไปทางซ้าย
         userPulse.style.display = "none";
         return;
       }
-
-      // จุดอ้างอิง (ใช้ตึก 1)
-      
-
       function gpsToMap(lat, lng) {
   const mapWidth = 1000;
   const mapHeight = 800;
@@ -861,7 +858,23 @@ function showRooms() {
 
 </script>
 <script>
+function drawRouteToBuilding(buildingId, startX, startY){
+  const b = document.getElementById(buildingId);
 
+  const x = parseFloat(b.getAttribute("x"));
+  const y = parseFloat(b.getAttribute("y"));
+  const w = parseFloat(b.getAttribute("width"));
+  const h = parseFloat(b.getAttribute("height"));
+
+  const centerX = x + w / 2;
+  const centerY = y + h / 2;
+
+  const path = document.getElementById("route");
+  path.setAttribute(
+    "d",
+    `M ${startX} ${startY} L ${centerX} ${centerY}`
+  );
+}
 const svg = document.querySelector("svg");
 
 document.querySelectorAll(".building").forEach(b=>{
@@ -904,23 +917,7 @@ function zoomToUser(x, y, zoom = 2) {
     `${x - 500/zoom} ${y - 400/zoom} ${1000/zoom} ${800/zoom}`
   );
 }
-function latLngToXY(lat, lng) {
 
-  const topLeft = { lat: 13.677688, lng: 100.615711 };
-  const topRight = { lat: 13.676127, lng: 100.617127 };
-  const bottomLeft = { lat: 13.676239, lng: 100.613911 };
-
-  const width = map.clientWidth;
-  const height = map.clientHeight;
-
-  const latRatio = (lat - bottomLeft.lat) / (topLeft.lat - bottomLeft.lat);
-  const lngRatio = (lng - bottomLeft.lng) / (topRight.lng - bottomLeft.lng);
-
-  const x = lngRatio * width;
-  const y = height - (latRatio * height);
-
-  return { x, y };
-}
 
 </script>
 <script>
